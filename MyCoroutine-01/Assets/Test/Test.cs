@@ -5,32 +5,17 @@ public class Test : MonoBehaviour
 {
 	public override void Start()
 	{
-		StartCoroutine("RoutineTest", "A");
-		StartCoroutine("RoutineTest", "B");
+		UnityEngine.Debug.Log("Start()");
 	}
 
-	int updateCount;
+	private int updateCount;
 
 	public override void Update()
 	{
-		UnityEngine.Debug.Log("    Update:" + updateCount);
-		++updateCount;
-	}
-
-	private IEnumerator RoutineTest(string name)
-	{
-		int count = 0;
-
-		while (true)
+		if (updateCount < 50)
 		{
-			if (count >= 100)
-			{
-				yield break;
-			}
-
-			++count;
-			UnityEngine.Debug.Log("★" + name + ", " + count);
-			yield return null;
+			UnityEngine.Debug.Log("Update():" + updateCount);
 		}
+		++updateCount;
 	}
 }

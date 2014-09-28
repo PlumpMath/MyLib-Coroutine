@@ -17,28 +17,6 @@ public class Main : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// このメソッドの実行中に StartCoroutine() が呼ばれると再入するので注意。
-	/// </summary>
-	/// <returns>The routine.</returns>
-	/// <param name="behaviour">Behaviour.</param>
-	/// <param name="methodName">Method name.</param>
-	/// <param name="routine">Routine.</param>
-	public static void AddRoutine(MyLib.MonoBehaviour behaviour, IEnumerator routine)
-	{
-		MyLib.BehaviourData bdata;
-
-		if (behaviourDict.TryGetValue(behaviour, out bdata))
-		{
-			if (!routine.MoveNext())
-			{
-				// すでに終わっているイテレータが渡されたら何もせずに帰る
-				return;
-			}
-			bdata.routineList.AddLast(routine);
-		}
-	}
-
 	public void Awake()
 	{
 		AddMonoBehaviour(new Test());
@@ -56,25 +34,6 @@ public class Main : MonoBehaviour
 			}
 
 			bdata.behaviour.Update();
-		}
-
-		// すべてのMonoBehaviourが持つコルーチンを実行。
-		// コルーチンは Update の後に呼ばれるので、ここで実行。
-		foreach (MyLib.BehaviourData bdata in behaviourDict.Values)
-		{
-			LinkedListNode<IEnumerator> node = bdata.routineList.First;
-			while (node != null)
-			{
-				var currentNode = node;
-				node = node.Next;
-
-				IEnumerator routine = currentNode.Value;
-				if (!routine.MoveNext())
-				{
-					// 終了したイテレータはリストから除去
-					bdata.routineList.Remove(currentNode);
-				}
-			}
 		}
 	}
 }
