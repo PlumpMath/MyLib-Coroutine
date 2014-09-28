@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace MyLib
 {
@@ -7,13 +6,13 @@ namespace MyLib
 	{
 		public MyLib.MonoBehaviour behaviour;
 		public bool mainloopBegan;
-		public LinkedList<IEnumerator> routineList;
+		public LinkedList<MyLib.Coroutine> routineList;
 
 		public BehaviourData(MyLib.MonoBehaviour behaviour)
 		{
 			this.behaviour = behaviour;
 			this.mainloopBegan = false;
-			this.routineList = new LinkedList<IEnumerator>();
+			this.routineList = new LinkedList<MyLib.Coroutine>();
 		}
 	}
 }
