@@ -13,12 +13,12 @@ namespace MyLib
 		{
 		}
 
-		public void StartCoroutine(IEnumerator routine)
+		public MyLib.Coroutine StartCoroutine(IEnumerator routine)
 		{
-			StartCoroutineCommon(null, routine);
+			return StartCoroutineCommon(null, routine);
 		}
 
-		public void StartCoroutine(string methodName, object arg = null)
+		public MyLib.Coroutine StartCoroutine(string methodName, object arg = null)
 		{
 			object[] param = (arg == null) ?
 				null :
@@ -30,14 +30,22 @@ namespace MyLib
 				null, this, param
 			);
 
-			StartCoroutineCommon(methodName, routine);
+			return StartCoroutineCommon(methodName, routine);
 		}
 
-		private void StartCoroutineCommon(string methodName, IEnumerator routine)
+		private MyLib.Coroutine StartCoroutineCommon(string methodName, IEnumerator routine)
 		{
-			// コルーチンの初回実行はStartCoroutineを呼び出したシーケンスで行われるので、
-			// このあたりで一回 MoveNext() を呼びたいところ。
-			Main.AddRoutine(this, routine);
+			return Main.AddRoutine(this, methodName, routine);
+		}
+
+		public void StopCoroutine(string methodName)
+		{
+			Main.RemoveRoutine(this, methodName);
+		}
+
+		public void StopAllCoroutines()
+		{
+			Main.RemoveAllRoutines(this);
 		}
 	}
 }

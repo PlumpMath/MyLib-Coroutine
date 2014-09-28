@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 
 public class Main : MonoBehaviour
 {
@@ -17,25 +16,50 @@ public class Main : MonoBehaviour
 		}
 	}
 
-	/// <summary>
-	/// このメソッドの実行中に StartCoroutine() が呼ばれると再入するので注意。
-	/// </summary>
-	/// <returns>The routine.</returns>
-	/// <param name="behaviour">Behaviour.</param>
-	/// <param name="methodName">Method name.</param>
-	/// <param name="routine">Routine.</param>
-	public static void AddRoutine(MyLib.MonoBehaviour behaviour, IEnumerator routine)
+	public static MyLib.Coroutine AddRoutine(MyLib.MonoBehaviour behaviour, string methodName, IEnumerator routine)
 	{
 		MyLib.BehaviourData bdata;
 
 		if (behaviourDict.TryGetValue(behaviour, out bdata))
 		{
-			if (!routine.MoveNext())
+			var coroutine = new MyLib.Coroutine(methodName, routine);
+			
+			// ひとまず1回実行
+			routine.MoveNext();
+			bdata.routineList.AddLast(coroutine);
+			return coroutine;
+		}
+		else
+		{
+			// ここに来ることはない
+			return null;
+		}
+	}
+
+	public static void RemoveRoutine(MyLib.MonoBehaviour behaviour, string methodName)
+	{
+		MyLib.BehaviourData bdata;
+		if (behaviourDict.TryGetValue(behaviour, out bdata))
+		{
+			LinkedListNode<MyLib.Coroutine> node = bdata.routineList.First;
+			while (node != null)
 			{
-				// すでに終わっているイテレータが渡されたら何もせずに帰る
-				return;
+				var oldNode = node;
+				node = node.Next;
+				if (oldNode.Value.methodName == methodName)
+				{
+					bdata.routineList.Remove(oldNode);
+				}
 			}
-			bdata.routineList.AddLast(routine);
+		}
+	}
+
+	public static void RemoveAllRoutines(MyLib.MonoBehaviour behaviour)
+	{
+		MyLib.BehaviourData bdata;
+		if (behaviourDict.TryGetValue(behaviour, out bdata))
+		{
+			bdata.routineList.Clear();
 		}
 	}
 
@@ -58,21 +82,21 @@ public class Main : MonoBehaviour
 			bdata.behaviour.Update();
 		}
 
-		// すべてのMonoBehaviourが持つコルーチンを実行。
-		// コルーチンは Update の後に呼ばれるので、ここで実行。
 		foreach (MyLib.BehaviourData bdata in behaviourDict.Values)
 		{
-			LinkedListNode<IEnumerator> node = bdata.routineList.First;
+			LinkedListNode<MyLib.Coroutine> node = bdata.routineList.First;
 			while (node != null)
 			{
-				var currentNode = node;
-				node = node.Next;
-
-				IEnumerator routine = currentNode.Value;
-				if (!routine.MoveNext())
+				MyLib.Coroutine coroutine = node.Value;
+				if (!coroutine.routine.MoveNext())
 				{
-					// 終了したイテレータはリストから除去
+					var currentNode = node;
+					node = node.Next;
 					bdata.routineList.Remove(currentNode);
+				}
+				else
+				{
+					node = node.Next;
 				}
 			}
 		}

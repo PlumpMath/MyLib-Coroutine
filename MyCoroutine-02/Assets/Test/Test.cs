@@ -5,18 +5,8 @@ public class Test : MonoBehaviour
 {
 	public override void Start()
 	{
-		// イテレータ指定で起動
 		StartCoroutine(RoutineTest("A"));
-		// メソッド名指定で起動
 		StartCoroutine("RoutineTest", "B");
-	}
-
-	int updateCount;
-
-	public override void Update()
-	{
-		UnityEngine.Debug.Log("Update:" + updateCount);
-		++updateCount;
 	}
 
 	private IEnumerator RoutineTest(string name)
@@ -25,12 +15,17 @@ public class Test : MonoBehaviour
 
 		while (true)
 		{
-			if (count >= 100)
+			++count;
+
+			if (count == 5)
+			{
+				StopCoroutine("RoutineTest");
+			}
+			if (count == 10)
 			{
 				yield break;
 			}
 
-			++count;
 			UnityEngine.Debug.Log("★" + name + ", " + count);
 			yield return null;
 		}
