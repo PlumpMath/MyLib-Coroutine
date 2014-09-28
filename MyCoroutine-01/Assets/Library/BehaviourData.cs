@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace MyLib
+﻿namespace MyLib
 {
 	public class BehaviourData
 	{

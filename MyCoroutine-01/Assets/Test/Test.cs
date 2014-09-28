@@ -1,7 +1,4 @@
-﻿using MyLib;
-using System.Collections;
-
-public class Test : MonoBehaviour
+﻿public class Test : MyLib.MonoBehaviour
 {
 	public override void Start()
 	{
@@ -15,7 +12,7 @@ public class Test : MonoBehaviour
 		if (updateCount < 50)
 		{
 			UnityEngine.Debug.Log("Update():" + updateCount);
+			++updateCount;
 		}
-		++updateCount;
 	}
 }

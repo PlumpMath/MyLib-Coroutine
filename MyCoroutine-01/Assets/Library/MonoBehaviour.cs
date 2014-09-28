@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Reflection;
-
-namespace MyLib
+﻿namespace MyLib
 {
 	public class MonoBehaviour
 	{
