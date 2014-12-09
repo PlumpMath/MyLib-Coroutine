@@ -26,7 +26,7 @@ public class Test : MonoBehaviour
 				yield break;
 			}
 
-			UnityEngine.Debug.Log("★" + name + ", " + count);
+			UnityEngine.Debug.Log(">>> " + name + ", " + count);
 			yield return null;
 		}
 	}

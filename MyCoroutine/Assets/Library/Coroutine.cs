@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace MyLib
 {
-	public class Coroutine : YieldInstruction
+	public class Coroutine
 	{
-		// ★このクラスのメンバやメソッドは、実際には internal で実装されることになると思う
-
 		public string methodName;
 		public IEnumerator routine;
 		public bool isChained;

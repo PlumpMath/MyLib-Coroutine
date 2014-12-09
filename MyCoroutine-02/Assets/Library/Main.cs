@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour
 {
-	// キーがnullになることがある、かつ登録した順序を保持したいので型はこうなる。
 	private static Dictionary<MyLib.MonoBehaviour, MyLib.BehaviourData> behaviourDict = 
 		new Dictionary<MyLib.MonoBehaviour, MyLib.BehaviourData>();
 

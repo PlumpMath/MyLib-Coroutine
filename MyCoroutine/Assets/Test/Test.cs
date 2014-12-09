@@ -1,39 +1,35 @@
 ﻿using MyLib;
 using System.Collections;
 
-public class Test : MonoBehaviour
-{
+public class Test : MonoBehaviour {
+
+	// Use this for initialization
 	public override void Start()
 	{
-		//StartCoroutine(RoutineTest());
-		StartCoroutine("RoutineTest", "A");
-		StartCoroutine("RoutineTest", "B");
+		StartCoroutine(Routine1());
+	}
+	
+	IEnumerator Routine1()
+	{
+		UnityEngine.Debug.Log("Routine1 In");
+
+		yield return StartCoroutine(Routine2());
+
+		UnityEngine.Debug.Log("Routine1 Out");
 	}
 
-	int count;
-
-	public override void Update()
+	IEnumerator Routine2()
 	{
-		++count;
-
-		UnityEngine.Debug.Log("    Update:" + count);
-
-		if (count == 50)
-		{
-			//StopAllCoroutines();
-			StopCoroutine("RoutineTest");
-		}
+		UnityEngine.Debug.Log("    Routine2 In");
+		yield return null;
+		yield return StartCoroutine(Routine3());
+		UnityEngine.Debug.Log("    Routine2 Out");
 	}
 
-	private IEnumerator RoutineTest(string name)
+	IEnumerator Routine3()
 	{
-		int x = 0;
-
-		while (true)
-		{
-			++x;
-			UnityEngine.Debug.Log("★" + name + ", " + x);
-			yield return null;
-		}
+		UnityEngine.Debug.Log("        Routine3 In");
+		yield return null;
+		UnityEngine.Debug.Log("        Routine3 Out");
 	}
 }
