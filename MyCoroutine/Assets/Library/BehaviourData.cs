@@ -7,7 +7,7 @@ namespace MyLib
 	{
 		public MyLib.MonoBehaviour behaviour;
 		public bool mainloopBegan;
-		public LinkedList<LinkedList<Coroutine>> routineList;
+		public LinkedList<LinkedList<MyLib.Coroutine>> routineList;
 
 		public BehaviourData(MyLib.MonoBehaviour behaviour)
 		{

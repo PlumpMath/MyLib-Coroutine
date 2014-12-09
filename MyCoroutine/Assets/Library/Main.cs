@@ -54,9 +54,9 @@ public class Main : MonoBehaviour
 	/// <param name="coroutine">Coroutine.</param>
 	private static bool ProcessCoroutine(MyLib.Coroutine coroutine)
 	{
+		// 一回だけ実行
 		bool executed = coroutine.routine.MoveNext();
 
-		// 一回だけ実行
 		if (executed)
 		{
 			object current = coroutine.routine.Current;
@@ -64,23 +64,20 @@ public class Main : MonoBehaviour
 			// current は yield return の戻り値である。
 			if (current is MyLib.Coroutine)
 			{
-				var innnerCoroutine = (MyLib.Coroutine)current;
+				MyLib.Coroutine nested = (MyLib.Coroutine)current;
 
-				// next をbeforeの後ろにくっつける。
-				// ただし、next が既に別のコルーチンチェーンに組み込まれていた場合、
-				// ログを出すだけで何もしない。
-				if (innnerCoroutine.isChained)
+				if (nested.isChained)
 				{
 					UnityEngine.Debug.Log("[エラー] 1つのコルーチンで2つ以上のコルーチンを待機させる事はできません。");
 				}
 				else
 				{
-					// nextが登録されているLinkedListからnextを削除。
-					innnerCoroutine.node.List.Remove(innnerCoroutine.node);
-					// coroutineのリストに改めてnextを登録。
-					innnerCoroutine.node = coroutine.node.List.AddLast(innnerCoroutine);
-					// nextはコルーチンチェーンに組み込まれたので、フラグを立てる。
-					innnerCoroutine.isChained = true;
+					// nestedが登録されているLinkedListからnestedを削除。
+					nested.node.List.Remove(nested.node);
+					// coroutineのリストに改めてnestedを登録。
+					nested.node = coroutine.node.List.AddLast(nested);
+					// nestedはコルーチンチェーンに組み込まれたので、フラグを立てる。
+					nested.isChained = true;
 				}
 			}
 		}
