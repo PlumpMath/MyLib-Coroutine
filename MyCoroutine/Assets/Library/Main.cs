@@ -1,18 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 
 public class Main : MonoBehaviour
 {
-	// キーがnullになることがある、かつ登録した順序を保持したいので型はこうなる。
 	private static Dictionary<MyLib.MonoBehaviour, MyLib.BehaviourData> behaviourDict = 
 		new Dictionary<MyLib.MonoBehaviour, MyLib.BehaviourData>();
-
-	/// <summary>
-	/// 現在実行されているCoroutine。
-	/// </summary>
-	private static Stack<MyLib.Coroutine> currentRoutine = new Stack<MyLib.Coroutine>();
 
 	public static void AddMonoBehaviour(MyLib.MonoBehaviour behaviour)
 	{
@@ -61,8 +54,6 @@ public class Main : MonoBehaviour
 	/// <param name="coroutine">Coroutine.</param>
 	private static bool ProcessCoroutine(MyLib.Coroutine coroutine)
 	{
-		currentRoutine.Push(coroutine);
-
 		bool executed = coroutine.routine.MoveNext();
 
 		// 一回だけ実行
@@ -70,34 +61,29 @@ public class Main : MonoBehaviour
 		{
 			object current = coroutine.routine.Current;
 
-			// ★TODO: とりあえずcurrentがCoroutineだった場合のみ考慮
-			// 将来的にはYieldInstructionにも対応する必要あり。
-
 			// current は yield return の戻り値である。
 			if (current is MyLib.Coroutine)
 			{
-				var next = (MyLib.Coroutine)current;
+				var innnerCoroutine = (MyLib.Coroutine)current;
 
 				// next をbeforeの後ろにくっつける。
 				// ただし、next が既に別のコルーチンチェーンに組み込まれていた場合、
 				// ログを出すだけで何もしない。
-				if (next.isChained)
+				if (innnerCoroutine.isChained)
 				{
 					UnityEngine.Debug.Log("[エラー] 1つのコルーチンで2つ以上のコルーチンを待機させる事はできません。");
 				}
 				else
 				{
 					// nextが登録されているLinkedListからnextを削除。
-					next.node.List.Remove(next.node);
-					// beforeのリストに改めてnextを登録。
-					next.node = coroutine.node.List.AddLast(next);
+					innnerCoroutine.node.List.Remove(innnerCoroutine.node);
+					// coroutineのリストに改めてnextを登録。
+					innnerCoroutine.node = coroutine.node.List.AddLast(innnerCoroutine);
 					// nextはコルーチンチェーンに組み込まれたので、フラグを立てる。
-					next.isChained = true;
+					innnerCoroutine.isChained = true;
 				}
 			}
 		}
-
-		currentRoutine.Pop();
 
 		return executed;
 	}
