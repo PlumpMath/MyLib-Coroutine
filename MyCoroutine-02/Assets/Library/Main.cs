@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
-public class Main : MonoBehaviour
+public class Main : UnityEngine.MonoBehaviour
 {
 	private static Dictionary<MyLib.MonoBehaviour, MyLib.BehaviourData> behaviourDict = 
 		new Dictionary<MyLib.MonoBehaviour, MyLib.BehaviourData>();
